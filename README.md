@@ -41,23 +41,62 @@ Audio Similarity Search (OpenL3 + Pinecone) – Built pipeline: preprocess → 5
 ```
 
 
-## Evaluation (Demo Subset)
-The public demo intentionally uses a tiny synthetic/public sample. Metrics below are illustrative placeholders—replace with real numbers from your private evaluation.
+## Evaluation (Derived From Notebook Pipeline)
+This project evaluates retrieval accuracy across three held‑out subsets built in the notebook:
 
-| Set              | Samples (clips) | Unique Reciters | Top‑1 Accuracy | Top‑3 Accuracy | Notes |
-|------------------|-----------------|-----------------|----------------|----------------|-------|
-| Demo Train Index |  <FILL>         |  <FILL>         |  —             |  —             | Used only to build small index |
-| Website Test     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Clean recordings subset |
-| YouTube Test     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Mixed compression quality |
-| Noise Stress     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Added synthetic/environmental noise |
-| Combined Total   |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Consolidated evaluation |
+1. `website_test`: Clean recitations (baseline quality)
+2. `youtube_test`: Compressed / variable quality streams
+3. `noise_test`: Stratified sample (50 clips per reciter) with added environmental / synthetic noise
 
-Reporting guidance:
-- Define Top‑K Accuracy: fraction of queries where true reciter appears in top K Pinecone results.
-- Provide latency (median query ms) if measured on commodity hardware.
-- Optionally include robustness deltas (e.g., Noise set: −X% vs clean).
+An aggregated frame `df_total` concatenates all three for overall scoring, and `X_Total / y_Total` feed the retrieval evaluation function.
 
-Privacy rationale: Full dataset sizes, full embeddings, and aggregate benchmarks remain private to prevent trivial cloning of production pipeline.
+### Retrieval Metric
+Top‑K Accuracy (primarily K=1, optionally K=3) is computed by querying Pinecone with each embedding and checking if the true reciter appears among the first K matches (`metadata['sheikh_name']`).
+
+### Core Evaluation Code (simplified)
+```python
+accuracy, true_matches, errors = evaluate_model(X_Total, y_Total, audio_engine, verbose=False)
+print({
+	'top1_accuracy': accuracy,
+	'true_matches': true_matches,
+	'errors': errors,
+	'total_tests': true_matches + errors
+})
+```
+
+To extend to Top‑3:
+```python
+def evaluate_topk(X_test, y_test, engine, k=3):
+	total=0; hits=0
+	for vec, (_, row) in zip(X_test['features'], y_test.iterrows()):
+		q = engine.search(vec.tolist(), top_k=k)
+		if 'matches' in q:
+			total += 1
+			names = [m['metadata']['sheikh_name'] for m in q['matches']]
+			if row['name'] in names:
+				hits += 1
+	return hits/total if total else 0.0
+
+top3_accuracy = evaluate_topk(X_Total, y_Total, audio_engine, k=3)
+```
+
+### Suggested Public Summary Table (replace <FILL> with your actual counts)
+| Set          | Clips | Reciters | Top‑1 Acc. | Top‑3 Acc. | Notes |
+|--------------|-------|----------|-----------:|-----------:|-------|
+| Website      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Clean baseline |
+| YouTube      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Compression impact |
+| Noise (50 ea)| <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Added noise stress |
+| Combined     | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Overall retrieval |
+
+Latency (optional): measure median query time by timing `engine.search` over N random samples.
+
+### Reporting Guidance
+- Include relative robustness: e.g., `Noise top‑1 −4.2% vs Website`.
+- If privacy sensitive, publish percentages only; keep raw clip counts private or bucket (e.g., 500–1K).
+- State index dimension (512) and metric (cosine) for reproducibility.
+
+### Privacy Rationale
+Exact large dataset makeup, full embeddings and full evaluation logs are withheld to reduce cloning risk while still demonstrating methodology and reproducibility steps.
 
 
 ## Request Full Access

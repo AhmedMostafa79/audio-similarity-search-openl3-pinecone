@@ -44,9 +44,9 @@ Metric: Top‑1 retrieval accuracy via cosine similarity in Pinecone (correct if
 
 - Combined verse retrieval: 94.64% accuracy (1,129 correct / 64 wrong), N = 1,193 queries.
 
-Evaluation image (to be added):
+Evaluation image:
 
-![Evaluation summary](assets/evaluation_summary.png)
+![Evaluation summary](assets/evaluation_summary.jpg)
 
 Privacy note: Full feature arrays and detailed logs remain private; we publish aggregate metrics and representative visuals.
 

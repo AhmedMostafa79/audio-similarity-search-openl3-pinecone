@@ -13,6 +13,19 @@ Pipeline: preprocess small sample audio -> extract 512-D OpenL3 embeddings -> bu
 - Basic evaluation accuracy on moderate sample set
 - t-SNE & similarity visualizations (static images or generated on demand)
 
+## Dataset & Reciters
+- Source: Majority of audio derived from Tarteel website, which provides ayah-level Quran recitations. We used these to construct our own dataset consisting of per-clip metadata and vector embeddings.
+- Reciters (initial 4):
+	- Mahmoud Khalil Al-Husary
+	- Abdulrahman Al-Sudais
+	- Maher Al-Muaiqly
+	- Yasser Al-Dusary
+- Composition (approximate):
+	- Clean ayah clips: ~1,100 per reciter (≈4,400 total)
+	- AI-generated noised clips: ~100 per reciter (≈400 total)
+	- Manually recorded real-time clips: ~40 per reciter (≈160 total)
+	- Grand total: ≈4,960 clips (≈1,240 per reciter)
+
 ## What Is Private (Full Version)
 - Large curated recitation dataset & preprocessing scripts
 - Full checkpointed batch feature extraction pipeline
@@ -26,16 +39,16 @@ Pipeline: preprocess small sample audio -> extract 512-D OpenL3 embeddings -> bu
 4. Run the demo notebook in `notebooks/` (to be added) or scripts in `src/`
 5. (Optional) Generate t-SNE visualization using provided helper
 
-## Evaluation (Concise)
-Evaluated with cosine similarity in Pinecone. A query counts as correct if the top result's reciter matches the ground truth (Top‑1 accuracy).
+## Results
+Metric: Top‑1 retrieval accuracy via cosine similarity in Pinecone (correct if the top match’s reciter equals ground truth).
 
-Report your results like this (fill in your numbers):
-- Website: used <N_WEBSITE> clips; acc = <ACC_WEBSITE>%
-- YouTube: used <N_YOUTUBE> clips; acc = <ACC_YOUTUBE>%
-- Noise (50 ea): used <N_NOISE> clips; acc = <ACC_NOISE>%
-- Combined: used <N_COMBINED> clips; acc = <ACC_COMBINED>%
+- Combined verse retrieval: 94.64% accuracy (1,129 correct / 64 wrong), N = 1,193 queries.
 
-Privacy note: Absolute dataset scale, full feature arrays, and extended logs remain private; these summaries are sufficient to convey retrieval quality.
+Evaluation image (to be added):
+
+![Evaluation summary](assets/evaluation_summary.png)
+
+Privacy note: Full feature arrays and detailed logs remain private; we publish aggregate metrics and representative visuals.
 
 ## Request Full Access
 Email <ahmedkhater7779@gmail.com> or open an issue titled `Access Request` with your affiliation. A temporary private repo invitation will be provided.

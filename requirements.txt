@@ -1,0 +1,14 @@
+numpy
+pandas
+librosa
+openl3
+tensorflow
+pinecone-client
+python-dotenv
+scikit-learn
+noisereduce
+matplotlib
+seaborn
+plotly
+scipy
+soundfile

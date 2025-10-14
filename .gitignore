@@ -1,0 +1,37 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environments
+.env
+.venv/
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data artifacts (keep only small samples)
+*.npy
+*.npz
+*.csv
+*.tsv
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.zip
+*.tar
+*.tar.gz
+
+# Logs / checkpoints
+*.log
+checkpoint.txt
+
+# Node
+node_modules/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

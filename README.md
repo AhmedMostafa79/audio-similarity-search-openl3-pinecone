@@ -41,6 +41,25 @@ Audio Similarity Search (OpenL3 + Pinecone) – Built pipeline: preprocess → 5
 ```
 
 
+## Evaluation (Demo Subset)
+The public demo intentionally uses a tiny synthetic/public sample. Metrics below are illustrative placeholders—replace with real numbers from your private evaluation.
+
+| Set              | Samples (clips) | Unique Reciters | Top‑1 Accuracy | Top‑3 Accuracy | Notes |
+|------------------|-----------------|-----------------|----------------|----------------|-------|
+| Demo Train Index |  <FILL>         |  <FILL>         |  —             |  —             | Used only to build small index |
+| Website Test     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Clean recordings subset |
+| YouTube Test     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Mixed compression quality |
+| Noise Stress     |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Added synthetic/environmental noise |
+| Combined Total   |  <FILL>         |  <FILL>         |  <FILL>%       |  <FILL>%       | Consolidated evaluation |
+
+Reporting guidance:
+- Define Top‑K Accuracy: fraction of queries where true reciter appears in top K Pinecone results.
+- Provide latency (median query ms) if measured on commodity hardware.
+- Optionally include robustness deltas (e.g., Noise set: −X% vs clean).
+
+Privacy rationale: Full dataset sizes, full embeddings, and aggregate benchmarks remain private to prevent trivial cloning of production pipeline.
+
+
 ## Request Full Access
 Email <your-email@example.com> or open an issue titled `Access Request` with your affiliation. A temporary private repo invitation will be provided.
 

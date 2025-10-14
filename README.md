@@ -26,34 +26,18 @@ Pipeline: preprocess small sample audio -> extract 512-D OpenL3 embeddings -> bu
 4. Run the demo notebook in `notebooks/` (to be added) or scripts in `src/`
 5. (Optional) Generate t-SNE visualization using provided helper
 
-## Demo
-| Resource | Link |
-|----------|------|
-| Video (2‑min overview) | <ADD_UNLISTED_YOUTUBE_OR_LOOM_LINK> |
-| Architecture Diagram | assets/architecture.png |
-| t-SNE Screenshot | assets/tsne.png |
+## Evaluation (Notebook-Derived)
+The original OpenL3 notebook constructs three held-out test subsets and an aggregated evaluation set:
 
-Add a short unlisted YouTube or Loom video: intro (10s) → architecture (30s) → notebook run (40s) → Pinecone query response (20s) → closing (10s). Keep under 2 minutes.
-
-## Resume Snippet
-```
-Audio Similarity Search (OpenL3 + Pinecone) – Built pipeline: preprocess → 512‑D OpenL3 embeddings → Pinecone vector index → cosine top‑K search + t‑SNE viz. Public mini repo & demo; full dataset + evaluation private (available on request).
-```
-
-
-## Evaluation (Derived From Notebook Pipeline)
-This project evaluates retrieval accuracy across three held‑out subsets built in the notebook:
-
-1. `website_test`: Clean recitations (baseline quality)
-2. `youtube_test`: Compressed / variable quality streams
-3. `noise_test`: Stratified sample (50 clips per reciter) with added environmental / synthetic noise
-
-An aggregated frame `df_total` concatenates all three for overall scoring, and `X_Total / y_Total` feed the retrieval evaluation function.
+- `website_test`: Clean recitations (baseline quality)
+- `youtube_test`: Compressed / variable quality clips
+- `noise_test`: Stratified sample with added environmental/synthetic noise (50 clips per reciter sampled)
+- `df_total`: Concatenation of the three above for overall scoring
 
 ### Retrieval Metric
-Top‑K Accuracy (primarily K=1, optionally K=3) is computed by querying Pinecone with each embedding and checking if the true reciter appears among the first K matches (`metadata['sheikh_name']`).
+Top-K accuracy (K=1 primary; optional K=3) using Pinecone cosine similarity. Each query is one embedding; a hit occurs if the true `name` (reciter) appears in the first K matches (metadata `sheikh_name`).
 
-### Core Evaluation Code (simplified)
+### Core Evaluation Code (excerpt)
 ```python
 accuracy, true_matches, errors = evaluate_model(X_Total, y_Total, audio_engine, verbose=False)
 print({
@@ -62,10 +46,7 @@ print({
 	'errors': errors,
 	'total_tests': true_matches + errors
 })
-```
 
-To extend to Top‑3:
-```python
 def evaluate_topk(X_test, y_test, engine, k=3):
 	total=0; hits=0
 	for vec, (_, row) in zip(X_test['features'], y_test.iterrows()):
@@ -80,24 +61,23 @@ def evaluate_topk(X_test, y_test, engine, k=3):
 top3_accuracy = evaluate_topk(X_Total, y_Total, audio_engine, k=3)
 ```
 
-### Suggested Public Summary Table (replace <FILL> with your actual counts)
+### Public Summary Table (fill with your results or keep partial)
 | Set          | Clips | Reciters | Top‑1 Acc. | Top‑3 Acc. | Notes |
 |--------------|-------|----------|-----------:|-----------:|-------|
 | Website      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Clean baseline |
 | YouTube      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Compression impact |
-| Noise (50 ea)| <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Added noise stress |
+| Noise (50 ea)| <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Noise robustness |
 | Combined     | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Overall retrieval |
 
-Latency (optional): measure median query time by timing `engine.search` over N random samples.
+Latency (optional): measure median per-query time over N random samples.
 
 ### Reporting Guidance
-- Include relative robustness: e.g., `Noise top‑1 −4.2% vs Website`.
-- If privacy sensitive, publish percentages only; keep raw clip counts private or bucket (e.g., 500–1K).
-- State index dimension (512) and metric (cosine) for reproducibility.
+- Provide relative robustness deltas (e.g., Noise top‑1 −X% vs Website).
+- If protecting IP, publish percentages only, leave absolute clip counts private or bucketed.
+- State embedding size (512) & metric (cosine) for reproducibility.
 
-### Privacy Rationale
-Exact large dataset makeup, full embeddings and full evaluation logs are withheld to reduce cloning risk while still demonstrating methodology and reproducibility steps.
-
+### Privacy Note
+Full dataset composition, large NPY feature arrays, and detailed benchmark logs are withheld to prevent trivial cloning while demonstrating methodology.
 
 ## Request Full Access
 Email <your-email@example.com> or open an issue titled `Access Request` with your affiliation. A temporary private repo invitation will be provided.

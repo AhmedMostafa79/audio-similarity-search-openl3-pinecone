@@ -26,61 +26,19 @@ Pipeline: preprocess small sample audio -> extract 512-D OpenL3 embeddings -> bu
 4. Run the demo notebook in `notebooks/` (to be added) or scripts in `src/`
 5. (Optional) Generate t-SNE visualization using provided helper
 
-## Evaluation (Notebook-Derived)
-The original OpenL3 notebook constructs three held-out test subsets and an aggregated evaluation set:
+## Evaluation (Concise)
+Evaluated with cosine similarity in Pinecone. A query counts as correct if the top result's reciter matches the ground truth (Top‑1 accuracy).
 
-- `website_test`: Clean recitations (baseline quality)
-- `youtube_test`: Compressed / variable quality clips
-- `noise_test`: Stratified sample with added environmental/synthetic noise (50 clips per reciter sampled)
-- `df_total`: Concatenation of the three above for overall scoring
+Report your results like this (fill in your numbers):
+- Website: used <N_WEBSITE> clips; acc = <ACC_WEBSITE>%
+- YouTube: used <N_YOUTUBE> clips; acc = <ACC_YOUTUBE>%
+- Noise (50 ea): used <N_NOISE> clips; acc = <ACC_NOISE>%
+- Combined: used <N_COMBINED> clips; acc = <ACC_COMBINED>%
 
-### Retrieval Metric
-Top-K accuracy (K=1 primary; optional K=3) using Pinecone cosine similarity. Each query is one embedding; a hit occurs if the true `name` (reciter) appears in the first K matches (metadata `sheikh_name`).
-
-### Core Evaluation Code (excerpt)
-```python
-accuracy, true_matches, errors = evaluate_model(X_Total, y_Total, audio_engine, verbose=False)
-print({
-	'top1_accuracy': accuracy,
-	'true_matches': true_matches,
-	'errors': errors,
-	'total_tests': true_matches + errors
-})
-
-def evaluate_topk(X_test, y_test, engine, k=3):
-	total=0; hits=0
-	for vec, (_, row) in zip(X_test['features'], y_test.iterrows()):
-		q = engine.search(vec.tolist(), top_k=k)
-		if 'matches' in q:
-			total += 1
-			names = [m['metadata']['sheikh_name'] for m in q['matches']]
-			if row['name'] in names:
-				hits += 1
-	return hits/total if total else 0.0
-
-top3_accuracy = evaluate_topk(X_Total, y_Total, audio_engine, k=3)
-```
-
-### Public Summary Table (fill with your results or keep partial)
-| Set          | Clips | Reciters | Top‑1 Acc. | Top‑3 Acc. | Notes |
-|--------------|-------|----------|-----------:|-----------:|-------|
-| Website      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Clean baseline |
-| YouTube      | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Compression impact |
-| Noise (50 ea)| <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Noise robustness |
-| Combined     | <FILL>| <FILL>   |  <FILL>%   |  <FILL>%   | Overall retrieval |
-
-Latency (optional): measure median per-query time over N random samples.
-
-### Reporting Guidance
-- Provide relative robustness deltas (e.g., Noise top‑1 −X% vs Website).
-- If protecting IP, publish percentages only, leave absolute clip counts private or bucketed.
-- State embedding size (512) & metric (cosine) for reproducibility.
-
-### Privacy Note
-Full dataset composition, large NPY feature arrays, and detailed benchmark logs are withheld to prevent trivial cloning while demonstrating methodology.
+Privacy note: Absolute dataset scale, full feature arrays, and extended logs remain private; these summaries are sufficient to convey retrieval quality.
 
 ## Request Full Access
-Email <your-email@example.com> or open an issue titled `Access Request` with your affiliation. A temporary private repo invitation will be provided.
+Email <ahmedkhater7779@gmail.com> or open an issue titled `Access Request` with your affiliation. A temporary private repo invitation will be provided.
 
 ## Tech Stack
 Python, OpenL3 (TensorFlow), Librosa, Pinecone, NumPy/Pandas, scikit-learn, Matplotlib/Seaborn/Plotly.

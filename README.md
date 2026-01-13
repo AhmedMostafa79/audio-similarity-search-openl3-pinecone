@@ -1,6 +1,34 @@
 # 🎵 Audio Similarity Search: Intelligent Quran Reciter Identification
 
-An advanced machine learning system that **identifies Quran reciters with 94.64% accuracy** using deep learning and semantic audio search. This project demonstrates the power of combining neural audio embeddings (OpenL3) with scalable vector databases (Pinecone) to solve real-world audio identification challenges.
+## 🎓 Graduation Project Context
+
+This project is the **AI-powered Reciter Identification component** of our Graduation Project: an innovative mobile application that merges deep technology with spiritual depth, enabling users to interact with the Quran in intelligent and meaningful ways.
+
+### 📱 The Complete App Features:
+
+**🧠 Two AI-Powered Models:**
+1. **Reciter Identification Model** (94.64% accuracy) - *This Repository*
+   - Uses OpenL3 audio embeddings + Pinecone Vector DB similarity search
+   - Detects the reciter's voice from any Quranic audio
+   
+2. **Surah & Verse Recognition Model** (96.0% accuracy)
+   - Built with Whisper (Arabic STT) + BERT for verse vectorization
+   - Returns the exact Surah and verse recited
+   - Bonus: Provides transcription for text-based comparison with Quran verses
+
+**🕋 Islamic Tools and Features:**
+- Full Mushaf with verse highlighting, bookmarking, and navigation (Juz', Hizb, Surah)
+- Multi-reciter playback with accurately timed segments
+- Multi-part search of verses
+- Location-based prayer times & Qibla direction
+- Sebha (Tasbeeh Counter)
+- Daily Azkar, reminders, and Tafsir
+
+---
+
+## 🎯 Focus of This Repository: Reciter Identification AI
+
+This repository specifically showcases the **Reciter Identification Model** - an advanced machine learning system that **identifies Quran reciters with 94.64% accuracy** using deep learning and semantic audio search. This component demonstrates the power of combining neural audio embeddings (OpenL3) with scalable vector databases (Pinecone) to solve real-world audio identification challenges.
 
 > **Real-World Problem**: How can we automatically identify which reciter is reciting a Quranic verse from audio alone, even in noisy conditions?  
 > **Solution**: Transform audio into semantic embeddings and find the most similar voice in a database of 4,960+ recitation clips.
@@ -189,7 +217,7 @@ These files demonstrate production-ready code organization and can serve as a re
 
 ## 📥 Full Access
 
-This public repository demonstrates the core methodology and architecture. The complete production system includes:
+This public repository demonstrates the core methodology and architecture with 4 reciters. The system is designed to scale, and future enhancements include:
 
 ✅ Extended dataset with 10+ reciters and 20,000+ audio clips  
 ✅ Advanced evaluation suites (noise robustness, cross-dataset validation)  
